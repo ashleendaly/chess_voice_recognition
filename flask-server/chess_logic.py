@@ -1,14 +1,9 @@
-import os
-import time
-import speech_recognition as sr
-import playsound
-from gtts import gTTS
 import chess
-import pyaudio
-import pyttsx3
+
 
 
 board = chess.Board()
+
 
 def game():
     while board.is_checkmate() == False and board.is_stalemate() == False and board.is_insufficient_material() == False:
