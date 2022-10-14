@@ -1,4 +1,5 @@
 from flask import Flask
+from chess_logic
 
 app = Flask(__name__)
 
