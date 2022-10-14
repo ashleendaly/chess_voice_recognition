@@ -15,25 +15,10 @@ while board.is_checkmate() == False and board.is_stalemate() == False and board.
     print(board)
     print()
     print(board.legal_moves)
-    # move = input("What is your chess move: ")
+    move = input("What is your chess move: ")
 
-    # input speech
-    r = sr.Recognizer()
+    move_data = move.split(" ")
 
-    def SpeakText(command):
-        engine = pyttsx3.init()
-        engine.say(command)
-        engine.runAndWait()
-
-    with sr.Microphone() as source:
-        audio_data = r.record(source, duration=5)
-        print("Recognizing...")
-
-        MyText = r.recognize_google(audio_data)
-        MyText = MyText.lower()
-
-    move_data = MyText.split(" ")
-    print(move_data)
 
     if len(move_data) == 3:
         if move_data[0] == "pawn":
