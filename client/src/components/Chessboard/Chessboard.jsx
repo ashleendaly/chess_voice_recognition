@@ -1,32 +1,34 @@
 import "./Chessboard.css";
 import { useState } from "react";
-import { buildBoard } from "./helpers";
-
-const movePiece = (currentPosition, newPosition) => {
-  const letterToInt = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8 };
-  const pieces = buildBoard();
-  console.log({ pieces });
-  const current_x = letterToInt[currentPosition[0]];
-  const current_y = parseInt(currentPosition[1]);
-  const new_x = letterToInt[newPosition[0]];
-  const new_y = parseInt(newPosition[1]);
-  for (let i = 0; i < pieces.length; i++) {
-    if (pieces[i].y === current_y && pieces[i].x === current_x) {
-      pieces[i].y = new_y;
-      pieces[i].x = new_x;
-    }
-  }
-  console.log({ pieces });
-};
+import { buildBoard, boardNotationToInteger } from "./helpers";
 
 const Chessboard = () => {
   const board = buildBoard();
 
   const [boardState, setBoardState] = useState(board);
 
+  const movePiece = (currentPosition, newPosition) => {
+    const [currentX, currentY] = boardNotationToInteger(currentPosition);
+    const [newX, newY] = boardNotationToInteger(newPosition);
+
+    console.table({ currentPosition, currentX, currentY });
+    console.table({ newPosition, newX, newY });
+
+    const newBoard = buildBoard();
+    console.log({ boardState });
+
+    for (let i = 0; i < newBoard.length; i++) {
+      if (newBoard[i].y === currentY && newBoard[i].x === currentX) {
+        newBoard[i].y = newY;
+        newBoard[i].x = newX;
+      }
+    }
+    setBoardState(newBoard);
+  };
+
   return (
     <div>
-      <div id='chessboard'>{board}</div>
+      <div id='chessboard'>{boardState}</div>
       <button
         onClick={() => {
           movePiece("e2", "e4");

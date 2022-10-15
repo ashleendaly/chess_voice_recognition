@@ -90,13 +90,13 @@ const buildBoard = () => {
 
   let board = [];
 
-  for (let j = verticalAxis.length - 1; j >= 0; j--) {
+  for (let j = verticalAxis.length; j > 0; j--) {
     for (let i = 0; i < horizontalAxis.length; i++) {
-      const number = j + i + 2;
+      const number = j + i;
       let image = "";
 
       pieces.forEach((p) => {
-        if (p.x === i && p.y === j) {
+        if (p.x === i + 1 && p.y === j) {
           image = p.image;
         }
       });
@@ -106,4 +106,12 @@ const buildBoard = () => {
   return board;
 };
 
-export { buildBoard };
+const boardNotationToInteger = (stringPosition) => {
+  const letterToInt = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8 };
+  const intPosition_x = letterToInt[stringPosition[0]];
+  const intPosition_y = parseInt(stringPosition[1]);
+
+  return [intPosition_x, intPosition_y];
+};
+
+export { buildBoard, boardNotationToInteger };
