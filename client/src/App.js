@@ -23,11 +23,32 @@ assembly
   .catch((err) => console.error(err));
 
 function App() {
+  // const [keyDownCounter, setKeyDownCounter] = useState(0);
+  // const [player, setPlayer] = useState("white");
+
   const { audioFile, isRecording, startRecording, stopRecording } =
     useVoiceRecorder();
 
-  // AssemblyAI API
+  // const handleKeyDown = useCallback((e) => {
+  //   if (e.key === " ") {
+  //     setKeyDownCounter((previousKeyDown) => previousKeyDown + 1);
+  //   }
+  // }, []);
 
+  // useEffect(() => {
+  //   document.addEventListener("keydown", handleKeyDown, true);
+  //   console.log(keyDownCounter);
+  // }, [keyDownCounter, handleKeyDown]);
+
+  // useEffect(() => {
+  //   if (keyDownCounter === 4) {
+  //     setKeyDownCounter(1);
+  //     const otherPlayer = player === "white" ? "black" : "white";
+  //     setPlayer(otherPlayer);
+  //   }
+  // }, [keyDownCounter, handleKeyDown]);
+
+  // AssemblyAI API
   // State variables
   const [uploadURL, setUploadURL] = useState("");
   const [transcriptID, setTranscriptID] = useState("");
@@ -87,9 +108,31 @@ function App() {
     return () => clearInterval(interval);
   });
 
+  // useEffect(() => {
+  //   switch (keyDownCounter) {
+  //     case 1:
+  //       startRecording();
+  //       break;
+  //     case 2:
+  //       stopRecording();
+  //       break;
+  //     case 3:
+  //       submitTranscriptionHandler();
+  //       break;
+  //     default:
+  //       console.log("something went wrong");
+  //   }
+  // }, [
+  //   keyDownCounter,
+  //   startRecording,
+  //   stopRecording,
+  //   submitTranscriptionHandler,
+  // ]);
+
   return (
-    <div id='app'>
-      <div className='flex flex-col gap-y-5'>
+    <div className='flex flex-row justify-center items-center' id='app'>
+      <div className='basis-3/12'>&nbsp;</div>
+      <div className='basis-5/12 flex flex-col gap-y-5'>
         <Chessboard />
         <VoiceRecorder
           isRecording={isRecording}
@@ -101,6 +144,10 @@ function App() {
           transcript={transcript}
           isLoading={isLoading}
         />
+      </div>
+      <div className='basis-3/12 ml-20 flex flex-col gap-y-5'>
+        <div className='text-white text-3xl font-bold'> {transcript}</div>
+        {/* <div className='text-white text-3xl font-bold'>{player}</div> */}
       </div>
     </div>
   );

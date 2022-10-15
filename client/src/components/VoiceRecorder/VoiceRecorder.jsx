@@ -12,9 +12,6 @@ const VoiceRecorder = (props) => {
 
   return (
     <div className='place-self-center self-center flex flex-col gap-y-5'>
-      <div className='text-3xl text-center'>
-        {transcriptData.status === "completed" ? transcript : ""}
-      </div>
       <div className='flex justify-center gap-x-4'>
         <button
           className={`p-4 bg-gray-300 rounded-full ${
