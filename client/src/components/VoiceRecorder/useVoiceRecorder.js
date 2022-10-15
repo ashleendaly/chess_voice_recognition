@@ -1,11 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import MicRecorder from "mic-recorder-to-mp3";
 
-const useVoiceRecorder = () => {
+const useVoiceRecorder = (setter) => {
   const recorder = useRef(null); //Recorder
-  const [audioFile, setAudioFile] = useState(null);
-  const [isRecording, setIsRecording] = useState(null);
-  // const [readyToSubmit, setReadyToSubmit] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
     //Declares the recorder object and stores it inside of ref
@@ -30,16 +28,14 @@ const useVoiceRecorder = () => {
         });
 
         setIsRecording(false);
-        setAudioFile(file);
+        setter(file);
       })
       .catch((e) => console.log(e));
   };
 
   return {
-    audioFile,
     isRecording,
-    startRecording,
-    stopRecording,
+    funcs: { startRecording, stopRecording },
   };
 };
 

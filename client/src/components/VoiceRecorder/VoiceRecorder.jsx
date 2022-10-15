@@ -1,14 +1,10 @@
-const VoiceRecorder = (props) => {
+import useVoiceRecorder from "./useVoiceRecorder";
+
+const VoiceRecorder = ({ disabled, setAudioFile }) => {
   const {
     isRecording,
-    startRecording,
-    stopRecording,
-    audioFile,
-    submitTranscriptionHandler,
-    transcriptData,
-    transcript,
-    isLoading,
-  } = props;
+    funcs: { startRecording, stopRecording },
+  } = useVoiceRecorder(setAudioFile);
 
   return (
     <div className='place-self-center self-center flex flex-col gap-y-5'>
@@ -76,12 +72,11 @@ const VoiceRecorder = (props) => {
         </button>
         <button
           className={`p-4 bg-gray-300 rounded-full ${
-            audioFile && !isLoading ? "text-green-700" : "text-gray-400"
+            !disabled ? "text-green-700" : "text-gray-400"
           }
-              ${isLoading ? "animate-spin" : ""}`}
-          onClick={submitTranscriptionHandler}
+              ${disabled ? "animate-spin" : ""}`}
         >
-          {isLoading ? (
+          {disabled ? (
             <svg
               xmlns='http://www.w3.org/2000/svg'
               width='24'
