@@ -1,1 +1,1 @@
-# chess_voice_recognition
+# Accessible Chess
