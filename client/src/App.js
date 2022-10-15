@@ -1,3 +1,7 @@
+import Chessboard from './components/Chessboard/Chessboard';
+// import Instructions from './components/Instructions/Instructions';
+import './App.css';
+
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Chessboard from "./components/Chessboard/Chessboard";
@@ -26,6 +30,7 @@ assembly
   })
   .then((res) => console.log(res.data))
   .catch((err) => console.error(err));
+
 
 function App() {
   const [currentPos, setCurrentPos] = useState("");
