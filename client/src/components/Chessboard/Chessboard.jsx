@@ -1,28 +1,33 @@
 import "./Chessboard.css";
 import { useState } from "react";
-import { buildBoard, boardNotationToInteger } from "./helpers";
+import { buildPieces, buildBoard, boardNotationToInteger } from "./helpers";
 
 const Chessboard = () => {
-  const board = buildBoard();
+  const pieces = buildPieces();
+  const board = buildBoard(pieces);
 
   const [boardState, setBoardState] = useState(board);
 
-  const movePiece = (currentPosition, newPosition) => {
+  const movePiece = (type, currentPosition, newPosition) => {
     const [currentX, currentY] = boardNotationToInteger(currentPosition);
     const [newX, newY] = boardNotationToInteger(newPosition);
 
     console.table({ currentPosition, currentX, currentY });
     console.table({ newPosition, newX, newY });
 
-    const newBoard = buildBoard();
-    console.log({ boardState });
+    console.log(type);
+    console.table(pieces[type]);
 
-    for (let i = 0; i < newBoard.length; i++) {
-      if (newBoard[i].y === currentY && newBoard[i].x === currentX) {
-        newBoard[i].y = newY;
-        newBoard[i].x = newX;
+    pieces[type].forEach((p) => {
+      if (p.x === currentX && p.y === currentY) {
+        p.x = newX;
+        p.y = newY;
       }
-    }
+    });
+
+    console.table(pieces[type]);
+    const newBoard = buildBoard(pieces);
+
     setBoardState(newBoard);
   };
 
@@ -31,7 +36,7 @@ const Chessboard = () => {
       <div id='chessboard'>{boardState}</div>
       <button
         onClick={() => {
-          movePiece("e2", "e4");
+          movePiece("b", "a7", "a2");
         }}
       >
         Change position
