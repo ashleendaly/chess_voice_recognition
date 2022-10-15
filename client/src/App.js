@@ -1,11 +1,15 @@
-import Chessboard from "./components/Chessboard/Chessboard";
-import "./App.css";
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import Chessboard from "./components/Chessboard/Chessboard";
 import VoiceRecorder from "./components/VoiceRecorder/VoiceRecorder";
-import { generateChessnotation } from "./components/VoiceRecorder/helpers";
 import useVoiceRecorder from "./components/VoiceRecorder/useVoiceRecorder";
+import { destructureInput } from "./components/VoiceRecorder/helpers";
+import {
+  boardNotationToInteger,
+  buildPieces,
+  buildBoard,
+} from "./components/Chessboard/helpers";
+import "./App.css";
 
 const assembly = axios.create({
   baseURL: "https://api.assemblyai.com/v2",
@@ -23,8 +27,10 @@ assembly
   .then((res) => console.log(res.data))
   .catch((err) => console.error(err));
 
-
 function App() {
+  const [currentPos, setCurrentPos] = useState("");
+  const [newPos, setNewPos] = useState("");
+
   // const [keyDownCounter, setKeyDownCounter] = useState(0);
   // const [player, setPlayer] = useState("white");
 
@@ -101,7 +107,14 @@ function App() {
         checkStatusHandler();
       } else {
         setIsLoading(false);
-        const chessNotation = generateChessnotation(transcriptData.text);
+        const [chessNotation, inputFrom, inputTo] = destructureInput(
+          transcriptData.text
+        );
+
+        setCurrentPos(inputFrom);
+        setNewPos(inputTo);
+        // trigger onClick
+
         setTranscript(chessNotation);
 
         clearInterval(interval);
@@ -131,11 +144,48 @@ function App() {
   //   submitTranscriptionHandler,
   // ]);
 
+  // -------------------------------------------------------------------
+
+  const pieces = buildPieces();
+  const board = buildBoard(pieces);
+
+  const [boardState, setBoardState] = useState(board);
+
+  const movePiece = useCallback(
+    (type, currentPosition, newPosition) => {
+      const [currentX, currentY] = boardNotationToInteger(currentPosition);
+      const [newX, newY] = boardNotationToInteger(newPosition);
+
+      console.table({ currentPosition, currentX, currentY });
+      console.table({ newPosition, newX, newY });
+
+      console.log(type);
+      console.table(pieces[type]);
+
+      pieces[type].forEach((p) => {
+        if (p.x === currentX && p.y === currentY) {
+          p.x = newX;
+          p.y = newY;
+        }
+      });
+
+      console.table(pieces[type]);
+      const newBoard = buildBoard(pieces);
+
+      setBoardState(newBoard);
+    },
+    [pieces]
+  );
+
+  useEffect(() => {
+    movePiece("w", currentPos, newPos);
+  }, [movePiece, currentPos, newPos]);
+
   return (
     <div className='flex flex-row justify-center items-center' id='app'>
       <div className='basis-3/12'>&nbsp;</div>
       <div className='basis-5/12 flex flex-col gap-y-5'>
-        <Chessboard />
+        <Chessboard boardState={boardState} />
         <VoiceRecorder
           isRecording={isRecording}
           startRecording={startRecording}
@@ -149,9 +199,11 @@ function App() {
       </div>
       <div className='basis-3/12 ml-20 flex flex-col gap-y-5'>
         <div className='text-white text-3xl font-bold'> {transcript}</div>
-        {/* <div className='text-white text-3xl font-bold'>{player}</div> */}
+        <div className='text-white text-3xl font-bold'>
+          current: {currentPos}
+        </div>
+        <div className='text-white text-3xl font-bold'> move to: {newPos}</div>
       </div>
-
     </div>
   );
 }
