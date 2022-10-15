@@ -1,14 +1,17 @@
 import "./tile.css";
 
-interface Props {
-    number: number;
-}
+const Tile = (props) => {
+  const { number, image } = props;
+  return (
+    <div className={`tile ${number % 2 === 0 ? "black-tile" : "white-tile"}`}>
+      {image && (
+        <div
+          style={{ backgroundImage: `url(${image})` }}
+          className='chess-piece'
+        ></div>
+      )}
+    </div>
+  );
+};
 
-export default function Tile({ number }: Props) {
-    if(number % 2 === 0) {
-        return <div className="tile black-tile"></div>
-    } else {
-        return <div className="tile white-tile"></div>
-    }
-
-}
+export default Tile;

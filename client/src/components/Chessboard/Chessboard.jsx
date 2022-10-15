@@ -1,20 +1,48 @@
-import './Chessboard.css';
-import Tile from "../Tile/tile";
+import "./Chessboard.css";
+import { useState } from "react";
+import { buildPieces, buildBoard, boardNotationToInteger } from "./helpers";
 
-const horizontalAxis = ["a","b","c","d","e","f","g","h",]
-const verticalAxis = ["1", "2", "3", "4", "5", "6", "7", "8"]
+const Chessboard = () => {
+  const pieces = buildPieces();
+  const board = buildBoard(pieces);
 
+  const [boardState, setBoardState] = useState(board);
 
-export default function Chessboard() {
-    let board = []
+  const movePiece = (type, currentPosition, newPosition) => {
+    const [currentX, currentY] = boardNotationToInteger(currentPosition);
+    const [newX, newY] = boardNotationToInteger(newPosition);
 
-    for(let j = verticalAxis.length-1; j >= 0; j--) {
-        for (let i = 0; i < horizontalAxis.length; i++)  {
-            const number = j + i + 2;
+    console.table({ currentPosition, currentX, currentY });
+    console.table({ newPosition, newX, newY });
 
-            board.push(<Tile number={number} />)
+    console.log(type);
+    console.table(pieces[type]);
 
-        }
-    }
-    return <div id="chessboard"> {board} </div>;
-}
+    pieces[type].forEach((p) => {
+      if (p.x === currentX && p.y === currentY) {
+        p.x = newX;
+        p.y = newY;
+      }
+    });
+
+    console.table(pieces[type]);
+    const newBoard = buildBoard(pieces);
+
+    setBoardState(newBoard);
+  };
+
+  return (
+    <div>
+      <div id='chessboard'>{boardState}</div>
+      <button
+        onClick={() => {
+          movePiece("b", "a7", "a2");
+        }}
+      >
+        Change position
+      </button>
+    </div>
+  );
+};
+
+export default Chessboard;
