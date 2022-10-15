@@ -1,4 +1,3 @@
-import Chessboard from './components/Chessboard/Chessboard';
 // import Instructions from './components/Instructions/Instructions';
 import './App.css';
 
@@ -167,8 +166,22 @@ function App() {
       console.log(type);
       console.table(pieces[type]);
 
+      if (type === "b"){
+        const other_type = "w";
+      } else {
+        const other_type = "b";
+      }
+
       pieces[type].forEach((p) => {
         if (p.x === currentX && p.y === currentY) {
+
+          pieces[other_type].forEach((captured_p) => {
+            if(captured_p.x === newX && captured_p.y === newY) {
+             captured_p.x = 10;
+             captured_p.y = 10;
+            }
+          });
+
           p.x = newX;
           p.y = newY;
         }
