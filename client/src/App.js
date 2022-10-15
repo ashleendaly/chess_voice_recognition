@@ -98,7 +98,7 @@ function App() {
 
   // -------------------------------------------------------------------
 
-  const pieces = buildPieces();
+  const [pieces, setPieces] = useState(buildPieces());
   const board = buildBoard(pieces);
 
   const [boardState, setBoardState] = useState(board);
@@ -113,6 +113,8 @@ function App() {
         p.y = newY;
       }
     });
+
+    setPieces(pieces);
 
     const newBoard = buildBoard(pieces);
     setBoardState(newBoard);

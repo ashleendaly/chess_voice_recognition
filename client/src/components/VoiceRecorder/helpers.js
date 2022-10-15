@@ -19,7 +19,7 @@ const destructureInput = (textInput) => {
 
   if (!textInput) return ["", "", ""];
 
-  const playerMoveArray = stripNonsense(textInput);
+  const playerMoveArray = stripNonsense(textInput.toLowerCase());
 
   const pos0 = playerMoveArray[0];
   const pos1 = playerMoveArray[1];
