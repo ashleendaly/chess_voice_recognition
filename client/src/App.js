@@ -1,11 +1,8 @@
 // import Instructions from './components/Instructions/Instructions';
-import './App.css';
-
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Chessboard from "./components/Chessboard/Chessboard";
 import VoiceRecorder from "./components/VoiceRecorder/VoiceRecorder";
-import useVoiceRecorder from "./components/VoiceRecorder/useVoiceRecorder";
 import { destructureInput } from "./components/VoiceRecorder/helpers";
 import {
   boardNotationToInteger,
@@ -30,78 +27,50 @@ assembly
   .then((res) => console.log(res.data))
   .catch((err) => console.error(err));
 
-
 function App() {
+  // State variables
+  const [chessNotation, setChessNotation] = useState("");
+
   const [currentPos, setCurrentPos] = useState("");
   const [newPos, setNewPos] = useState("");
+  const [type, setType] = useState("w");
 
-  // const [keyDownCounter, setKeyDownCounter] = useState(0);
-  // const [player, setPlayer] = useState("white");
+  const [audioFile, setAudioFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { audioFile, isRecording, startRecording, stopRecording } =
-    useVoiceRecorder();
-
-  // const handleKeyDown = useCallback((e) => {
-  //   if (e.key === " ") {
-  //     setKeyDownCounter((previousKeyDown) => previousKeyDown + 1);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   document.addEventListener("keydown", handleKeyDown, true);
-  //   console.log(keyDownCounter);
-  // }, [keyDownCounter, handleKeyDown]);
-
-  // useEffect(() => {
-  //   if (keyDownCounter === 4) {
-  //     setKeyDownCounter(1);
-  //     const otherPlayer = player === "white" ? "black" : "white";
-  //     setPlayer(otherPlayer);
-  //   }
-  // }, [keyDownCounter, handleKeyDown]);
-
-  // AssemblyAI API
-  // State variables
-  const [uploadURL, setUploadURL] = useState("");
   const [transcriptID, setTranscriptID] = useState("");
   const [transcriptData, setTranscriptData] = useState("");
-  const [transcript, setTranscript] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   // Upload the Audio File and retrieve the Upload URL
   useEffect(() => {
     if (audioFile) {
+      setTranscriptData("");
       assembly
         .post("/upload", audioFile)
-        .then((res) => setUploadURL(res.data.upload_url))
+        .then((res) =>
+          assembly.post("/transcript", {
+            audio_url: res.data.upload_url,
+          })
+        )
+        .then((res) => {
+          setTranscriptID(res.data.id);
+          checkStatusHandler();
+        })
         .catch((err) => console.error(err));
     }
   }, [audioFile]);
 
-  // Submit the Upload URL to AssemblyAI and retrieve the Transcript ID
-  const submitTranscriptionHandler = () => {
-    assembly
-      .post("/transcript", {
-        audio_url: uploadURL,
-      })
-      .then((res) => {
-        setTranscriptID(res.data.id);
-
-        checkStatusHandler();
-      })
-      .catch((err) => console.error(err));
-  };
-
   // Check the status of the Transcript
-  const checkStatusHandler = async () => {
+  const checkStatusHandler = () => {
     setIsLoading(true);
-    try {
-      await assembly.get(`/transcript/${transcriptID}`).then((res) => {
+    assembly
+      .get(`/transcript/${transcriptID}`)
+      .then((res) => {
         setTranscriptData(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
       });
-    } catch (err) {
-      console.error(err);
-    }
   };
 
   // Periodically check the status of the Transcript
@@ -119,7 +88,7 @@ function App() {
         setNewPos(inputTo);
         // trigger onClick
 
-        setTranscript(chessNotation);
+        setChessNotation(chessNotation);
 
         clearInterval(interval);
       }
@@ -127,38 +96,23 @@ function App() {
     return () => clearInterval(interval);
   });
 
-  // useEffect(() => {
-  //   switch (keyDownCounter) {
-  //     case 1:
-  //       startRecording();
-  //       break;
-  //     case 2:
-  //       stopRecording();
-  //       break;
-  //     case 3:
-  //       submitTranscriptionHandler();
-  //       break;
-  //     default:
-  //       console.log("something went wrong");
-  //   }
-  // }, [
-  //   keyDownCounter,
-  //   startRecording,
-  //   stopRecording,
-  //   submitTranscriptionHandler,
-  // ]);
-
   // -------------------------------------------------------------------
 
-  const pieces = buildPieces();
+  const [pieces, setPieces] = useState(buildPieces());
   const board = buildBoard(pieces);
 
   const [boardState, setBoardState] = useState(board);
 
-  const movePiece = useCallback(
-    (type, currentPosition, newPosition) => {
-      const [currentX, currentY] = boardNotationToInteger(currentPosition);
-      const [newX, newY] = boardNotationToInteger(newPosition);
+  const movePiece = (type, currentPos, newPos) => {
+    const [currentX, currentY] = boardNotationToInteger(currentPos);
+    const [newX, newY] = boardNotationToInteger(newPos);
+
+    pieces[type].forEach((p) => {
+      if (p.x === currentX && p.y === currentY) {
+        p.x = newX;
+        p.y = newY;
+      }
+    });
 
       console.table({ currentPosition, currentX, currentY });
       console.table({ newPosition, newX, newY });
@@ -187,36 +141,35 @@ function App() {
         }
       });
 
-      console.table(pieces[type]);
-      const newBoard = buildBoard(pieces);
+    setPieces(pieces);
 
-      setBoardState(newBoard);
-    },
-    [pieces]
-  );
+    const newBoard = buildBoard(pieces);
+    setBoardState(newBoard);
 
-  useEffect(() => {
-    movePiece("w", currentPos, newPos);
-  }, [movePiece, currentPos, newPos]);
+    const nextType = type === "w" ? "b" : "w";
+    setType(nextType);
+  };
 
   return (
     <div className='flex flex-row justify-center items-center' id='app'>
       <div className='basis-3/12'>&nbsp;</div>
       <div className='basis-5/12 flex flex-col gap-y-5'>
         <Chessboard boardState={boardState} />
-        <VoiceRecorder
-          isRecording={isRecording}
-          startRecording={startRecording}
-          stopRecording={stopRecording}
-          audioFile={audioFile}
-          submitTranscriptionHandler={submitTranscriptionHandler}
-          transcriptData={transcriptData}
-          transcript={transcript}
-          isLoading={isLoading}
-        />
+        <div className='flex'>
+          <VoiceRecorder disabled={isLoading} setAudioFile={setAudioFile} />
+          <div
+            className={`ml-5 py-4 px-5 bg-red-600 hover:bg-red-800 
+            cursor-pointer rounded-full`}
+            onClick={() => {
+              movePiece(type, currentPos, newPos);
+            }}
+          >
+            @
+          </div>
+        </div>
       </div>
       <div className='basis-3/12 ml-20 flex flex-col gap-y-5'>
-        <div className='text-white text-3xl font-bold'> {transcript}</div>
+        <div className='text-white text-3xl font-bold'> {chessNotation}</div>
         <div className='text-white text-3xl font-bold'>
           current: {currentPos}
         </div>
