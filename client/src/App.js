@@ -1,5 +1,6 @@
 import Chessboard from "./components/Chessboard/Chessboard";
 import "./App.css";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import VoiceRecorder from "./components/VoiceRecorder/VoiceRecorder";
@@ -21,6 +22,7 @@ assembly
   })
   .then((res) => console.log(res.data))
   .catch((err) => console.error(err));
+
 
 function App() {
   // const [keyDownCounter, setKeyDownCounter] = useState(0);
@@ -149,6 +151,7 @@ function App() {
         <div className='text-white text-3xl font-bold'> {transcript}</div>
         {/* <div className='text-white text-3xl font-bold'>{player}</div> */}
       </div>
+
     </div>
   );
 }
