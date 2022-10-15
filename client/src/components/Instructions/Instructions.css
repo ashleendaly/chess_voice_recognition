@@ -1,0 +1,14 @@
+#instructions {
+    color: #2b2b2b;
+    background-color: #ebecd0;
+    width: 300px;
+    padding: 20px;
+    border-radius: 25px;
+    box-shadow: 10px 10px #779556;
+
+}
+
+#italic {
+    font-style: italic;
+}
+
