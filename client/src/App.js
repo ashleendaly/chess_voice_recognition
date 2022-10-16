@@ -150,7 +150,10 @@ function App() {
               ) : (
                 <div className='flex flex-row gap-x-5'>
                   <div className='text-white text-3xl font-bold'>
-                    moving {currentPos} to {newPos}
+                    {currentPos && "moving "}
+                    <span className='text-red-600'>{currentPos}</span>
+                    {newPos && " to "}
+                    <span className='text-red-600'>{newPos}</span>
                   </div>
                 </div>
               )}
