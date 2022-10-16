@@ -13,9 +13,9 @@ const Instructions = () => {
       </div>
 
       <div className='mt-4 text-xl font-bold'> Voice Command Format </div>
-      <p id='italic'> "Piece + Position + to + NewPosition" </p>
+      <p id='italic'> "Move + Position + To + NewPosition" </p>
       <div className='mt-3 text-base font-bold'> Example </div>
-      <p id='italic'> "Rook a1 to a7" </p>
+      <p id='italic'> "Move a1 to a7" </p>
     </div>
   );
 };
