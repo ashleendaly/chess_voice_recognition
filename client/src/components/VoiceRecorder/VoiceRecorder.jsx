@@ -1,11 +1,26 @@
 import useVoiceRecorder from "./useVoiceRecorder";
+import { useEffect } from "react";
 import { LoadingIcon, PlayIcon, RecordingIcon, StopIcon } from "./icons";
 
-const VoiceRecorder = ({ disabled, setAudioFile, handleClick }) => {
+const VoiceRecorder = ({ disabled, setAudioFile, makeMove }) => {
   const {
     isRecording,
     funcs: { startRecording, stopRecording },
   } = useVoiceRecorder(setAudioFile);
+
+  useEffect(() => {
+    document.addEventListener("keydown", detectKeyDown, true)
+  }, [])
+
+  const detectKeyDown = (e) => {
+    if (e.key === "v"){
+        startRecording();
+    } else if (e.key === "b"){
+        stopRecording();
+    } else if (e.key === "n"){
+        makeMove();
+    }
+  }
 
   return (
     <div className='place-self-center self-center flex flex-col gap-y-5'>
@@ -32,7 +47,7 @@ const VoiceRecorder = ({ disabled, setAudioFile, handleClick }) => {
         <div
           className={`p-4 text-gray-300 bg-red-600 hover:bg-red-800 
           cursor-pointer rounded-full`}
-          onClick={handleClick}
+          onClick={makeMove}
         >
           <svg
             xmlns='http://www.w3.org/2000/svg'

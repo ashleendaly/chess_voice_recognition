@@ -108,7 +108,7 @@ function App() {
       b: "bee",
       c: "cee",
       d: "dee",
-      e: "e",
+      e: "ee",
       f: "ef",
       g: "gee",
       h: "aitch",
@@ -191,7 +191,7 @@ function App() {
           <VoiceRecorder
             disabled={isLoading}
             setAudioFile={setAudioFile}
-            handleClick={() => {
+            makeMove={() => {
               movePiece(type, currentPos, newPos);
             }}
           />
