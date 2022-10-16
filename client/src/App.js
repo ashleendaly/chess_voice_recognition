@@ -118,26 +118,28 @@ function App() {
     };
 
     if (isNotValid(mF) || isNotValid(mT)) {
-        return "please make a valid move"
+      return "please make a valid move";
     }
 
     const color = type === "w" ? "white" : "black";
-    return `${color} moved from ${phonetic[mF[0]]} ${mF[1]} to ${phonetic[mT[0]]} ${mT[1]}`;
-
-
+    return `${color} moved from ${phonetic[mF[0]]} ${mF[1]} to ${
+      phonetic[mT[0]]
+    } ${mT[1]}`;
   };
 
-   const getTextSentence = (type, mF, mT) => {
+  const getTextSentence = (mF, mT) => {
+    if (mF === "") return "";
+
     if (isNotValid(mF) || isNotValid(mT)) {
-        return "please make a valid move"
+      return "please make a valid move";
     }
-    const color = type === "w" ? "white" : "black";
-    return `${color} moved from ${mF} to ${mT}`;
+
+    // const color = type === "w" ? "white" : "black";
+
+    return `current move: ${mF} to ${mT}`;
   };
 
   const movePiece = (type, currentPos, newPos) => {
-    // speak({ text: getSpeechSentence(type, currentPos, newPos) });
-
     const [currentX, currentY] = boardNotationToInteger(currentPos);
     const [newX, newY] = boardNotationToInteger(newPos);
 
@@ -172,7 +174,10 @@ function App() {
   };
 
   return (
-    <div className='pt-20 flex flex-row justify-evenly items-center' id='app'>
+    <div
+      className='pt-20 h-screen flex flex-row justify-evenly items-center'
+      id='app'
+    >
       <div className='pt-28 h-full'>
         <Instructions />
       </div>
@@ -186,9 +191,9 @@ function App() {
                 <LoadingIcon />
               ) : (
                 <div className='flex flex-row gap-x-5'>
-                   <div className='text-white text-3xl font-bold'>
-                       {getTextSentence(type, currentPos, newPos)}
-                   </div>
+                  <div className='text-white text-3xl font-bold'>
+                    {getTextSentence(currentPos, newPos)}
+                  </div>
                 </div>
               )}
             </div>

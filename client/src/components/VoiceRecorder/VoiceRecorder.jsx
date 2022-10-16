@@ -3,6 +3,8 @@ import { useEffect, useRef } from "react";
 import { PlayIcon, RecordingIcon, StopIcon, SubmitIcon } from "./icons";
 
 const VoiceRecorder = ({ setAudioFile, makeMove }) => {
+  const submitButton = useRef(null);
+
   const {
     isRecording,
     funcs: { startRecording, stopRecording },
@@ -21,6 +23,10 @@ const VoiceRecorder = ({ setAudioFile, makeMove }) => {
     document.addEventListener("keypress", handleClick, true);
   }, []);
 
+  useEffect(() => {
+    // current property is refered to input element
+    submitButton.current.focus();
+  }, []);
   return (
     <div className='place-self-center self-center flex flex-col gap-y-5'>
       <div className='flex flex-col justify-center gap-y-4'>
@@ -47,6 +53,7 @@ const VoiceRecorder = ({ setAudioFile, makeMove }) => {
           className={`p-4 text-gray-300 bg-red-600 hover:bg-red-800 
           cursor-pointer rounded-full`}
           onClick={makeMove}
+          ref={submitButton}
         >
           <SubmitIcon />
         </button>
