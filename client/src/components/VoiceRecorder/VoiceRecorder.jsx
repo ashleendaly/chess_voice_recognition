@@ -1,6 +1,7 @@
 import useVoiceRecorder from "./useVoiceRecorder";
+import { LoadingIcon, PlayIcon, RecordingIcon, StopIcon } from "./icons";
 
-const VoiceRecorder = ({ disabled, setAudioFile }) => {
+const VoiceRecorder = ({ disabled, setAudioFile, handleClick }) => {
   const {
     isRecording,
     funcs: { startRecording, stopRecording },
@@ -8,7 +9,7 @@ const VoiceRecorder = ({ disabled, setAudioFile }) => {
 
   return (
     <div className='place-self-center self-center flex flex-col gap-y-5'>
-      <div className='flex justify-center gap-x-4'>
+      <div className='flex flex-col justify-center gap-y-4'>
         <button
           className={`p-4 bg-gray-300 rounded-full ${
             isRecording ? "text-red-600" : ""
@@ -16,37 +17,7 @@ const VoiceRecorder = ({ disabled, setAudioFile }) => {
           disabled={isRecording}
           onClick={startRecording}
         >
-          {isRecording ? (
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              width='24'
-              height='24'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth='2'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            >
-              <circle cx='12' cy='12' r='10'></circle>
-              <circle cx='12' cy='12' r='1'></circle>
-            </svg>
-          ) : (
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              width='24'
-              height='24'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth='2'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            >
-              <circle cx='12' cy='12' r='10'></circle>
-              <polygon points='10 8 16 12 10 16 10 8'></polygon>
-            </svg>
-          )}
+          {isRecording ? <RecordingIcon /> : <PlayIcon />}
         </button>
         <button
           className={`p-4 bg-gray-300 rounded-full ${
@@ -55,6 +26,14 @@ const VoiceRecorder = ({ disabled, setAudioFile }) => {
           disabled={!isRecording}
           onClick={stopRecording}
         >
+          <StopIcon />
+        </button>
+
+        <div
+          className={`p-4 text-gray-300 bg-red-600 hover:bg-red-800 
+          cursor-pointer rounded-full`}
+          onClick={handleClick}
+        >
           <svg
             xmlns='http://www.w3.org/2000/svg'
             width='24'
@@ -62,51 +41,15 @@ const VoiceRecorder = ({ disabled, setAudioFile }) => {
             viewBox='0 0 24 24'
             fill='none'
             stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
+            stroke-width='2'
+            stroke-linecap='round'
+            stroke-linejoin='round'
           >
             <circle cx='12' cy='12' r='10'></circle>
-            <rect x='9' y='9' width='6' height='6'></rect>
+            <polyline points='12 16 16 12 12 8'></polyline>
+            <line x1='8' y1='12' x2='16' y2='12'></line>
           </svg>
-        </button>
-        <button
-          className={`p-4 bg-gray-300 rounded-full ${
-            !disabled ? "text-green-700" : "text-gray-400"
-          }
-              ${disabled ? "animate-spin" : ""}`}
-        >
-          {disabled ? (
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              width='24'
-              height='24'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth='2'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            >
-              <path d='M21 12a9 9 0 1 1-6.219-8.56'></path>
-            </svg>
-          ) : (
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              width='24'
-              height='24'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth='2'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            >
-              <line x1='5' y1='12' x2='19' y2='12'></line>
-              <polyline points='12 5 19 12 12 19'></polyline>
-            </svg>
-          )}
-        </button>
+        </div>
       </div>
     </div>
   );
