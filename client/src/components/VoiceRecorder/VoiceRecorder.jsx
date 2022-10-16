@@ -1,26 +1,34 @@
 import useVoiceRecorder from "./useVoiceRecorder";
-import { useEffect } from "react";
-import { LoadingIcon, PlayIcon, RecordingIcon, StopIcon } from "./icons";
+import { useEffect, useRef } from "react";
+import { PlayIcon, RecordingIcon, StopIcon, SubmitIcon } from "./icons";
 
-const VoiceRecorder = ({ disabled, setAudioFile, makeMove }) => {
+const VoiceRecorder = ({ setAudioFile, makeMove }) => {
   const {
     isRecording,
     funcs: { startRecording, stopRecording },
   } = useVoiceRecorder(setAudioFile);
 
-  useEffect(() => {
-    document.addEventListener("keydown", detectKeyDown, true)
-  }, [])
+  const ref = useRef(null);
 
-  const detectKeyDown = (e) => {
-    if (e.key === "v"){
+  useEffect(() => {
+    const handleClick = (e) => {
+      if ("jdJD".includes(e.key)) {
         startRecording();
-    } else if (e.key === "b"){
+      } else if ("kfKF".includes(e.key)) {
         stopRecording();
-    } else if (e.key === "n"){
+      } else if (e.key === " ") {
         makeMove();
-    }
-  }
+      }
+    };
+
+    const element = ref.current;
+
+    element.addEventListener("keypress", handleClick);
+
+    return () => {
+      element.removeEventListener("keypress", handleClick);
+    };
+  }, []);
 
   return (
     <div className='place-self-center self-center flex flex-col gap-y-5'>
@@ -31,6 +39,7 @@ const VoiceRecorder = ({ disabled, setAudioFile, makeMove }) => {
           }`}
           disabled={isRecording}
           onClick={startRecording}
+          ref={ref}
         >
           {isRecording ? <RecordingIcon /> : <PlayIcon />}
         </button>
@@ -40,31 +49,19 @@ const VoiceRecorder = ({ disabled, setAudioFile, makeMove }) => {
           }`}
           disabled={!isRecording}
           onClick={stopRecording}
+          ref={ref}
         >
           <StopIcon />
         </button>
 
-        <div
+        <button
           className={`p-4 text-gray-300 bg-red-600 hover:bg-red-800 
           cursor-pointer rounded-full`}
           onClick={makeMove}
+          ref={ref}
         >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='24'
-            height='24'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            stroke-width='2'
-            stroke-linecap='round'
-            stroke-linejoin='round'
-          >
-            <circle cx='12' cy='12' r='10'></circle>
-            <polyline points='12 16 16 12 12 8'></polyline>
-            <line x1='8' y1='12' x2='16' y2='12'></line>
-          </svg>
-        </div>
+          <SubmitIcon />
+        </button>
       </div>
     </div>
   );

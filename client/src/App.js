@@ -5,7 +5,10 @@ import Chessboard from "./components/Chessboard/Chessboard";
 import VoiceRecorder from "./components/VoiceRecorder/VoiceRecorder";
 import Instructions from "./components/Instructions/Instructions";
 import { VerticalAxis, HorizontalAxis } from "./components/Axes";
-import { destructureInput } from "./components/VoiceRecorder/helpers";
+import {
+  destructureInput,
+  isNotValid,
+} from "./components/VoiceRecorder/helpers";
 import {
   boardNotationToInteger,
   buildPieces,
@@ -84,10 +87,10 @@ function App() {
         checkStatusHandler();
       } else {
         setIsLoading(false);
-        const [inputFrom, inputTo] = destructureInput(transcriptData.text);
+        const [moveFrom, moveTo] = destructureInput(transcriptData.text);
 
-        setCurrentPos(inputFrom);
-        setNewPos(inputTo);
+        setCurrentPos(moveFrom);
+        setNewPos(moveTo);
 
         clearInterval(interval);
       }
@@ -114,16 +117,17 @@ function App() {
       h: "aitch",
     };
 
+    if (isNotValid(mF) || isNotValid(mT)) return "please enter a valid move";
+
+    setCurrentPos("");
+    setNewPos("");
     const color = type === "w" ? "white" : "black";
-
-    const sentence = `${color} moved from ${phonetic[mF[0]]} ${mF[1]} 
+    return `${color} moved from ${phonetic[mF[0]]} ${mF[1]} 
     to ${phonetic[mT[0]]} ${mT[1]}`;
-
-    return sentence;
   };
 
   const movePiece = (type, currentPos, newPos) => {
-    speak({ text: playerMoveSentence(type, currentPos, newPos) });
+    // speak({ text: playerMoveSentence(type, currentPos, newPos) });
 
     const [currentX, currentY] = boardNotationToInteger(currentPos);
     const [newX, newY] = boardNotationToInteger(newPos);
@@ -154,16 +158,18 @@ function App() {
     const newBoard = buildBoard(pieces);
     setBoardState(newBoard);
 
+    // TO-DO: changes color even if no move is performed
+
     const nextType = type === "w" ? "b" : "w";
     setType(nextType);
   };
 
   return (
-    <div className='flex flex-row justify-center items-center' id='app'>
-      <div className='ml-9 -mr-20 -mt-32 basis-4/12'>
+    <div className='pt-20 flex flex-row justify-evenly items-center' id='app'>
+      <div className='pt-28 h-full'>
         <Instructions />
       </div>
-      <div className='-mt-10 basis-5/12 flex flex-col gap-y-5'>
+      <div className='flex flex-col gap-y-5 h-full'>
         <div className='flex flex-row'>
           <VerticalAxis vertical={true} />
           <div className='w-max relative'>
@@ -173,12 +179,14 @@ function App() {
                 <LoadingIcon />
               ) : (
                 <div className='flex flex-row gap-x-5'>
-                  <div className='text-white text-3xl font-bold'>
-                    {currentPos && "moving "}
-                    <span className='text-red-600'>{currentPos}</span>
-                    {newPos && " to "}
-                    <span className='text-red-600'>{newPos}</span>
-                  </div>
+                  {newPos !== "" && (
+                    <div className='text-white text-3xl font-bold'>
+                      {currentPos && "moving "}
+                      <span className='text-red-600'>{currentPos}</span>
+                      {newPos && " to "}
+                      <span className='text-red-600'>{newPos}</span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -186,8 +194,19 @@ function App() {
         </div>
         <HorizontalAxis />
       </div>
-      <div className='basis-2/12 ml-20 flex flex-col gap-y-5'>
-        <div className='-mt-10 flex'>
+      <div className='h-full flex flex-col gap-y-5'>
+        <div className='flex flex-col justify-center'>
+          <div className='mb-16 flex justify-center' id='card'>
+            <img
+              className='w-32 h-32'
+              src={
+                type === "w"
+                  ? "/assets/images/king_w.png"
+                  : "/assets/images/king_b.png"
+              }
+              alt={"..."}
+            />
+          </div>
           <VoiceRecorder
             disabled={isLoading}
             setAudioFile={setAudioFile}
