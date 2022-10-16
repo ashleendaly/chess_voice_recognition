@@ -12,7 +12,7 @@ const VoiceRecorder = ({ setAudioFile, makeMove }) => {
 
   const handleClick = (e) => {
     console.log("clicked: " + e.key);
-    if (e.key === "j") {
+    if ("jdJD".includes(e.key)) {
       startRecording();
     } else if ("kfKF".includes(e.key)) {
       stopRecording();
@@ -51,7 +51,7 @@ const VoiceRecorder = ({ setAudioFile, makeMove }) => {
 
         <button
           className={`p-4 text-gray-300 bg-red-600 hover:bg-red-800 
-          cursor-pointer rounded-full`}
+          cursor-pointer rounded-full focus:ring-0 focus:ring-offset-0`}
           onClick={makeMove}
           ref={submitButton}
         >
