@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState  } from "react";
 import axios from "axios";
+import { useSpeechSynthesis } from "react-speech-kit";
 import Chessboard from "./components/Chessboard/Chessboard";
 import VoiceRecorder from "./components/VoiceRecorder/VoiceRecorder";
 import Instructions from "./components/Instructions/Instructions";
@@ -31,6 +32,8 @@ assembly
 
 function App() {
   // State variables
+
+  const { speak } = useSpeechSynthesis();
 
   const [currentPos, setCurrentPos] = useState("");
   const [newPos, setNewPos] = useState("");
@@ -85,7 +88,6 @@ function App() {
 
         setCurrentPos(inputFrom);
         setNewPos(inputTo);
-        // trigger onClick
 
         clearInterval(interval);
       }
@@ -163,6 +165,7 @@ function App() {
         <HorizontalAxis />
       </div>
       <div className='basis-2/12 ml-20 flex flex-col gap-y-5'>
+
         <div className='-mt-10 flex'>
           <VoiceRecorder
             disabled={isLoading}
@@ -171,6 +174,7 @@ function App() {
               movePiece(type, currentPos, newPos);
             }}
           />
+
         </div>
       </div>
     </div>
