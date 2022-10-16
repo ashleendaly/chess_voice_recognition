@@ -1,4 +1,4 @@
-import { useEffect, useState  } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSpeechSynthesis } from "react-speech-kit";
 import Chessboard from "./components/Chessboard/Chessboard";
@@ -102,7 +102,29 @@ function App() {
 
   const [boardState, setBoardState] = useState(board);
 
+  const playerMoveSentence = (type, mF, mT) => {
+    const phonetic = {
+      a: "ay",
+      b: "bee",
+      c: "cee",
+      d: "dee",
+      e: "e",
+      f: "ef",
+      g: "gee",
+      h: "aitch",
+    };
+
+    const color = type === "w" ? "white" : "black";
+
+    const sentence = `${color} moved from ${phonetic[mF[0]]} ${mF[1]} 
+    to ${phonetic[mT[0]]} ${mT[1]}`;
+
+    return sentence;
+  };
+
   const movePiece = (type, currentPos, newPos) => {
+    speak({ text: playerMoveSentence(type, currentPos, newPos) });
+
     const [currentX, currentY] = boardNotationToInteger(currentPos);
     const [newX, newY] = boardNotationToInteger(newPos);
 
@@ -165,7 +187,6 @@ function App() {
         <HorizontalAxis />
       </div>
       <div className='basis-2/12 ml-20 flex flex-col gap-y-5'>
-
         <div className='-mt-10 flex'>
           <VoiceRecorder
             disabled={isLoading}
@@ -174,7 +195,6 @@ function App() {
               movePiece(type, currentPos, newPos);
             }}
           />
-
         </div>
       </div>
     </div>
