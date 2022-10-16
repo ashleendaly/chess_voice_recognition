@@ -123,7 +123,7 @@ function App() {
   };
 
   const movePiece = (type, currentPos, newPos) => {
-    speak({ text: playerMoveSentence(type, currentPos, newPos) });
+    // speak({ text: playerMoveSentence(type, currentPos, newPos) });
 
     const [currentX, currentY] = boardNotationToInteger(currentPos);
     const [newX, newY] = boardNotationToInteger(newPos);
