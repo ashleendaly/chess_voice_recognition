@@ -19,33 +19,21 @@ const destructureInput = (textInput) => {
 
   if (!textInput) return ["", "", ""];
 
-  const playerMoveArray = stripNonsense(textInput.toLowerCase());
+  const pos = stripNonsense(textInput.toLowerCase());
 
-  const pos0 = playerMoveArray[0];
-  const pos1 = playerMoveArray[1];
-  const pos2 = playerMoveArray[2];
-  const pos3 = playerMoveArray[3];
-  const pos4 = playerMoveArray[4];
-  const pos5 = playerMoveArray[5];
+  const commonErrors = { s: "f", age: "h" };
 
-  const capture_options = ["captures", "takes"];
-  const capture = capture_options.includes(pos3.toLowerCase()) ? "x" : "";
+  let pos1 = Object.keys(commonErrors).includes(pos[1])
+    ? commonErrors[pos[1]]
+    : pos[1];
+  let pos4 = Object.keys(commonErrors).includes(pos[4])
+    ? commonErrors[pos[4]]
+    : pos[4];
 
-  let pieceSymbol = "";
-  if (pos0.toLowerCase()[0] === "p" && capture === "x") {
-    pieceSymbol = "e";
-  } else if (pos0.toLowerCase()[0] === "p") {
-    pieceSymbol = "";
-  } else {
-    pieceSymbol = pos0.toUpperCase()[0];
-  }
+  const currentPos = pos1 + toNumber[pos[2]];
+  const newPos = pos4 + toNumber[pos[5]];
 
-  const currentPos = pos1 + toNumber[pos2];
-  const newPos = pos4 + toNumber[pos5];
-
-  const chessNotation = pieceSymbol + capture + newPos;
-
-  return [chessNotation, currentPos, newPos];
+  return [currentPos, newPos];
 };
 
 export { destructureInput };

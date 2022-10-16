@@ -11,6 +11,7 @@ import {
   buildBoard,
 } from "./components/Chessboard/helpers";
 import "./App.css";
+import { LoadingIcon } from "./components/VoiceRecorder/icons";
 
 const assembly = axios.create({
   baseURL: "https://api.assemblyai.com/v2",
@@ -30,7 +31,6 @@ assembly
 
 function App() {
   // State variables
-  const [chessNotation, setChessNotation] = useState("");
 
   const [currentPos, setCurrentPos] = useState("");
   const [newPos, setNewPos] = useState("");
@@ -81,15 +81,11 @@ function App() {
         checkStatusHandler();
       } else {
         setIsLoading(false);
-        const [chessNotation, inputFrom, inputTo] = destructureInput(
-          transcriptData.text
-        );
+        const [inputFrom, inputTo] = destructureInput(transcriptData.text);
 
         setCurrentPos(inputFrom);
         setNewPos(inputTo);
         // trigger onClick
-
-        setChessNotation(chessNotation);
 
         clearInterval(interval);
       }
@@ -143,45 +139,36 @@ function App() {
       <div className='ml-9 -mr-20 -mt-32 basis-4/12'>
         <Instructions />
       </div>
-      <div className='basis-5/12 flex flex-col gap-y-5'>
+      <div className='-mt-10 basis-5/12 flex flex-col gap-y-5'>
         <div className='flex flex-row'>
           <VerticalAxis vertical={true} />
-          <Chessboard boardState={boardState} />
-        </div>
-        <HorizontalAxis />
-        <div className='flex'>
-          <VoiceRecorder disabled={isLoading} setAudioFile={setAudioFile} />
-          <div
-            className={`ml-5 p-4 text-gray-300 bg-red-600 hover:bg-red-800 
-            cursor-pointer rounded-full`}
-            onClick={() => {
-              movePiece(type, currentPos, newPos);
-            }}
-          >
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              width='24'
-              height='24'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              stroke-width='2'
-              stroke-linecap='round'
-              stroke-linejoin='round'
-            >
-              <circle cx='12' cy='12' r='10'></circle>
-              <polyline points='12 16 16 12 12 8'></polyline>
-              <line x1='8' y1='12' x2='16' y2='12'></line>
-            </svg>
+          <div className='w-max relative'>
+            <Chessboard boardState={boardState} />
+            <div className='absolute inset-x-0 -bottom-28 flex justify-center'>
+              {isLoading ? (
+                <LoadingIcon />
+              ) : (
+                <div className='flex flex-row gap-x-5'>
+                  <div className='text-white text-3xl font-bold'>
+                    moving {currentPos} to {newPos}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
+        <HorizontalAxis />
       </div>
       <div className='basis-2/12 ml-20 flex flex-col gap-y-5'>
-        <div className='text-white text-3xl font-bold'> {chessNotation}</div>
-        <div className='text-white text-3xl font-bold'>
-          current: {currentPos}
+        <div className='-mt-10 flex'>
+          <VoiceRecorder
+            disabled={isLoading}
+            setAudioFile={setAudioFile}
+            handleClick={() => {
+              movePiece(type, currentPos, newPos);
+            }}
+          />
         </div>
-        <div className='text-white text-3xl font-bold'> move to: {newPos}</div>
       </div>
     </div>
   );
