@@ -21,7 +21,7 @@ const destructureInput = (textInput) => {
 
   const pos = stripNonsense(textInput.toLowerCase());
 
-  const commonErrors = { s: "f", age: "h" };
+  const commonErrors = { s: "f", age: "h", bravo: "b", delta: "d" };
 
   let pos1 = Object.keys(commonErrors).includes(pos[1])
     ? commonErrors[pos[1]]
@@ -36,4 +36,9 @@ const destructureInput = (textInput) => {
   return [currentPos, newPos];
 };
 
-export { destructureInput };
+const isNotValid = (pos) => {
+  if (!"abcdefgh".includes(pos[0])) return true;
+  if (!"12345678".includes(pos[1])) return true;
+};
+
+export { destructureInput, isNotValid };
