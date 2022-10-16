@@ -1,8 +1,9 @@
-// import Instructions from './components/Instructions/Instructions';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Chessboard from "./components/Chessboard/Chessboard";
 import VoiceRecorder from "./components/VoiceRecorder/VoiceRecorder";
+import Instructions from "./components/Instructions/Instructions";
+import { VerticalAxis, HorizontalAxis } from "./components/Axes";
 import { destructureInput } from "./components/VoiceRecorder/helpers";
 import {
   boardNotationToInteger,
@@ -107,39 +108,26 @@ function App() {
     const [currentX, currentY] = boardNotationToInteger(currentPos);
     const [newX, newY] = boardNotationToInteger(newPos);
 
+    let other_type = "";
+    if (type === "b") {
+      other_type = "w";
+    } else {
+      other_type = "b";
+    }
+
     pieces[type].forEach((p) => {
       if (p.x === currentX && p.y === currentY) {
+        pieces[other_type].forEach((captured_p) => {
+          if (captured_p.x === newX && captured_p.y === newY) {
+            captured_p.x = 10;
+            captured_p.y = 10;
+          }
+        });
+
         p.x = newX;
         p.y = newY;
       }
     });
-
-      console.table({ currentPosition, currentX, currentY });
-      console.table({ newPosition, newX, newY });
-
-      console.log(type);
-      console.table(pieces[type]);
-
-      if (type === "b"){
-        const other_type = "w";
-      } else {
-        const other_type = "b";
-      }
-
-      pieces[type].forEach((p) => {
-        if (p.x === currentX && p.y === currentY) {
-
-          pieces[other_type].forEach((captured_p) => {
-            if(captured_p.x === newX && captured_p.y === newY) {
-             captured_p.x = 10;
-             captured_p.y = 10;
-            }
-          });
-
-          p.x = newX;
-          p.y = newY;
-        }
-      });
 
     setPieces(pieces);
 
@@ -152,23 +140,43 @@ function App() {
 
   return (
     <div className='flex flex-row justify-center items-center' id='app'>
-      <div className='basis-3/12'>&nbsp;</div>
+      <div className='ml-9 -mr-20 -mt-32 basis-4/12'>
+        <Instructions />
+      </div>
       <div className='basis-5/12 flex flex-col gap-y-5'>
-        <Chessboard boardState={boardState} />
+        <div className='flex flex-row'>
+          <VerticalAxis vertical={true} />
+          <Chessboard boardState={boardState} />
+        </div>
+        <HorizontalAxis />
         <div className='flex'>
           <VoiceRecorder disabled={isLoading} setAudioFile={setAudioFile} />
           <div
-            className={`ml-5 py-4 px-5 bg-red-600 hover:bg-red-800 
+            className={`ml-5 p-4 text-gray-300 bg-red-600 hover:bg-red-800 
             cursor-pointer rounded-full`}
             onClick={() => {
               movePiece(type, currentPos, newPos);
             }}
           >
-            @
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='24'
+              height='24'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              stroke-width='2'
+              stroke-linecap='round'
+              stroke-linejoin='round'
+            >
+              <circle cx='12' cy='12' r='10'></circle>
+              <polyline points='12 16 16 12 12 8'></polyline>
+              <line x1='8' y1='12' x2='16' y2='12'></line>
+            </svg>
           </div>
         </div>
       </div>
-      <div className='basis-3/12 ml-20 flex flex-col gap-y-5'>
+      <div className='basis-2/12 ml-20 flex flex-col gap-y-5'>
         <div className='text-white text-3xl font-bold'> {chessNotation}</div>
         <div className='text-white text-3xl font-bold'>
           current: {currentPos}
