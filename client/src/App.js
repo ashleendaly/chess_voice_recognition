@@ -105,7 +105,7 @@ function App() {
 
   const [boardState, setBoardState] = useState(board);
 
-  const playerMoveSentence = (type, mF, mT) => {
+  const getSpeechSentence = (type, mF, mT) => {
     const phonetic = {
       a: "ay",
       b: "bee",
@@ -117,17 +117,26 @@ function App() {
       h: "aitch",
     };
 
-    if (isNotValid(mF) || isNotValid(mT)) return "please enter a valid move";
+    if (isNotValid(mF) || isNotValid(mT)) {
+        return "please make a valid move"
+    }
 
-    setCurrentPos("");
-    setNewPos("");
     const color = type === "w" ? "white" : "black";
-    return `${color} moved from ${phonetic[mF[0]]} ${mF[1]} 
-    to ${phonetic[mT[0]]} ${mT[1]}`;
+    return `${color} moved from ${phonetic[mF[0]]} ${mF[1]} to ${phonetic[mT[0]]} ${mT[1]}`;
+
+
+  };
+
+   const getTextSentence = (type, mF, mT) => {
+    if (isNotValid(mF) || isNotValid(mT)) {
+        return "please make a valid move"
+    }
+    const color = type === "w" ? "white" : "black";
+    return `${color} moved from ${mF} to ${mT}`;
   };
 
   const movePiece = (type, currentPos, newPos) => {
-    // speak({ text: playerMoveSentence(type, currentPos, newPos) });
+    // speak({ text: getSpeechSentence(type, currentPos, newPos) });
 
     const [currentX, currentY] = boardNotationToInteger(currentPos);
     const [newX, newY] = boardNotationToInteger(newPos);
@@ -158,8 +167,6 @@ function App() {
     const newBoard = buildBoard(pieces);
     setBoardState(newBoard);
 
-    // TO-DO: changes color even if no move is performed
-
     const nextType = type === "w" ? "b" : "w";
     setType(nextType);
   };
@@ -179,14 +186,9 @@ function App() {
                 <LoadingIcon />
               ) : (
                 <div className='flex flex-row gap-x-5'>
-                  {newPos !== "" && (
-                    <div className='text-white text-3xl font-bold'>
-                      {currentPos && "moving "}
-                      <span className='text-red-600'>{currentPos}</span>
-                      {newPos && " to "}
-                      <span className='text-red-600'>{newPos}</span>
-                    </div>
-                  )}
+                   <div className='text-white text-3xl font-bold'>
+                       {getTextSentence(type, currentPos, newPos)}
+                   </div>
                 </div>
               )}
             </div>
