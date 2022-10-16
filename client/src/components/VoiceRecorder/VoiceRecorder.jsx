@@ -8,26 +8,17 @@ const VoiceRecorder = ({ setAudioFile, makeMove }) => {
     funcs: { startRecording, stopRecording },
   } = useVoiceRecorder(setAudioFile);
 
-  const ref = useRef(null);
+  const handleClick = (e) => {
+    console.log("clicked: " + e.key);
+    if (e.key === "j") {
+      startRecording();
+    } else if ("kfKF".includes(e.key)) {
+      stopRecording();
+    }
+  };
 
   useEffect(() => {
-    const handleClick = (e) => {
-      if ("jdJD".includes(e.key)) {
-        startRecording();
-      } else if ("kfKF".includes(e.key)) {
-        stopRecording();
-      } else if (e.key === " ") {
-        makeMove();
-      }
-    };
-
-    const element = ref.current;
-
-    element.addEventListener("keypress", handleClick);
-
-    return () => {
-      element.removeEventListener("keypress", handleClick);
-    };
+    document.addEventListener("keypress", handleClick, true);
   }, []);
 
   return (
@@ -39,7 +30,6 @@ const VoiceRecorder = ({ setAudioFile, makeMove }) => {
           }`}
           disabled={isRecording}
           onClick={startRecording}
-          ref={ref}
         >
           {isRecording ? <RecordingIcon /> : <PlayIcon />}
         </button>
@@ -49,7 +39,6 @@ const VoiceRecorder = ({ setAudioFile, makeMove }) => {
           }`}
           disabled={!isRecording}
           onClick={stopRecording}
-          ref={ref}
         >
           <StopIcon />
         </button>
@@ -58,7 +47,6 @@ const VoiceRecorder = ({ setAudioFile, makeMove }) => {
           className={`p-4 text-gray-300 bg-red-600 hover:bg-red-800 
           cursor-pointer rounded-full`}
           onClick={makeMove}
-          ref={ref}
         >
           <SubmitIcon />
         </button>
