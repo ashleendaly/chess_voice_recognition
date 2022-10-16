@@ -3,3 +3,10 @@
 
     background-color: #212121;
 }
+
+#card {
+    background-color: #d0e3ec;
+    padding: 10px;
+    border-radius: 25px;
+    box-shadow: 10px 10px #6f90d3;
+}
